@@ -113,10 +113,10 @@ router.delete('/users/:user_id', async (req, res) => {
   // Edit a user
 router.put('/users/:user_id', async (req, res) => {
     const { user_id } = req.params;
-    const { first_name,last_name, email } = req.body;
-  
+    const { first_name,last_name, email} = req.body;
+  console.log(user_id)
     try {
-      const query = 'UPDATE user SET first_name = ?,last_name = ?, email = ? WHERE id = ?';
+      const query = 'UPDATE user SET first_name = ?,last_name = ?, email = ? WHERE user_id = ?';
       const [result] = await db.execute(query, [first_name,last_name, email, user_id]);
   
       if (result.affectedRows > 0) {
@@ -261,6 +261,46 @@ router.delete('/bookings/:booking_id', async (req, res) => {
       }
     } catch (err) {
       console.error('Error deleting place:', err);
+      res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+    }
+  });
+
+
+//delete a hotel
+  router.delete('/hotels/:hotel_id', async (req, res) => {
+    const { hotel_id } = req.params;
+  
+    try {
+      const query = 'DELETE FROM hotels WHERE hotel_id = ?';
+      const [result] = await db.execute(query, [hotel_id]);
+  
+      if (result.affectedRows > 0) {
+        res.json({ status: 'success', message: 'Hotel deleted successfully' });
+      } else {
+        res.status(404).json({ status: 'error', message: 'Hotel not found' });
+      }
+    } catch (err) {
+      console.error('Error deleting hotel:', err);
+      res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+    }
+  });
+
+
+  //delete a vehicle
+  router.delete('/vehicles/:vehicle_id', async (req, res) => {
+    const { vehicle_id } = req.params;
+  
+    try {
+      const query = 'DELETE FROM vehicles WHERE vehicle_id = ?';
+      const [result] = await db.execute(query, [vehicle_id]);
+  
+      if (result.affectedRows > 0) {
+        res.json({ status: 'success', message: 'Vehicle deleted successfully' });
+      } else {
+        res.status(404).json({ status: 'error', message: 'Vehicle not found' });
+      }
+    } catch (err) {
+      console.error('Error deleting Vehicle:', err);
       res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
     }
   });

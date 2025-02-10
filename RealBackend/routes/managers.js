@@ -224,30 +224,98 @@ router.post('/vehicles', async (req, res) => {
 // Update package
 
 
-// Update hotel
-router.put('/hotels/:id', async (req, res) => {
-    const { id } = req.params;
-    const { name, location, rating } = req.body;
-    try {
-        const queryText = 'UPDATE hotels SET name = ?, location = ?, rating = ? WHERE id = ?';
-        const result = await db.execute(queryText, [name, location, rating, id]);
-        res.send(utils.createSuccess(result));
-    } catch (err) {
-        res.send(utils.createError(err));
+// Edit a hotel
+router.put('/hotels/:hotel_id', async (req, res) => {
+  const { hotel_id } = req.params;
+  const { name, reviews, city_id, image, cost} = req.body;
+console.log(hotel_id)
+  try {
+    const query = 'UPDATE hotels SET name = ?,reviews = ?, city_id = ?, image = ?, cost = ? WHERE hotel_id = ?';
+    const [result] = await db.execute(query, [name, reviews, city_id, image, cost, hotel_id]);
+
+    if (result.affectedRows > 0) {
+      res.json({ status: 'success', message: 'Hotel updated successfully' });
+    } else {
+      res.status(404).json({ status: 'error', message: 'Hotel not found' });
     }
+  } catch (err) {
+    console.error('Error updating hotel:', err);
+    res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+  }
 });
 
+
+// // Update hotel
+// router.put('/hotels/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const { name, location, rating } = req.body;
+//     try {
+//         const queryText = 'UPDATE hotels SET name = ?, location = ?, rating = ? WHERE id = ?';
+//         const result = await db.execute(queryText, [name, location, rating, id]);
+//         res.send(utils.createSuccess(result));
+//     } catch (err) {
+//         res.send(utils.createError(err));
+//     }
+// });
+
 // Update vehicle
-router.put('/vehicles/:id', async (req, res) => {
-    const { id } = req.params;
-    const { name, type, capacity } = req.body;
-    try {
-        const queryText = 'UPDATE vehicles SET name = ?, type = ?, capacity = ? WHERE id = ?';
-        const result = await db.execute(queryText, [name, type, capacity, id]);
-        res.send(utils.createSuccess(result));
-    } catch (err) {
-        res.send(utils.createError(err));
+// router.put('/vehicles/:vehicle_id', async (req, res) => {
+//     const { vehicle_id } = req.params;
+//     const { name, type, cost, unique_no } = req.body;
+//     try {
+//         const queryText = 'UPDATE vehicles SET name = ?, type = ?, cost = ?, unique_no = ? WHERE vehicle_id = ?';
+//         const result = await db.execute(queryText, [name, type, cost, unique_no, vehicle_id]);
+//         res.send(utils.createSuccess(result));
+//     }
+  
+
+//     if (result.affectedRows > 0) {
+//       res.json({ status: 'success', message: 'Place updated successfully' });
+//     } else {
+//       res.status(404).json({ status: 'error', message: 'Place not found' });
+//     }
+//   } catch (err) {
+//     console.error('Error updating place:', err);
+//     res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+//   }
+//   });
+
+router.put('/vehicles/:vehicle_id', async (req, res) => {
+  const { vehicle_id } = req.params;
+  const { name, type, cost, unique_no} = req.body;
+console.log(vehicle_id)
+  try {
+    const query = 'UPDATE vehicles SET name = ?, type = ?, cost = ?, unique_no = ? WHERE vehicle_id = ?';
+    const [result] = await db.execute(query, [name, type, cost, unique_no, vehicle_id]);
+
+    if (result.affectedRows > 0) {
+      res.json({ status: 'success', message: 'Vehicle updated successfully' });
+    } else {
+      res.status(404).json({ status: 'error', message: 'Vehicle not found' });
     }
+  } catch (err) {
+    console.error('Error updating vehicle:', err);
+    res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+  }
+});
+
+//delete a vehicle
+router.delete('/vehicles/:vehicle_id', async (req, res) => {
+  const { vehicle_id } = req.params;
+
+  try {
+    const query = 'DELETE FROM vehicles WHERE vehicle_id = ?';
+    const [result] = await db.execute(query, [vehicle_id]);
+
+    if (result.affectedRows > 0) {
+      res.json({ status: 'success', message: 'Vehicle deleted successfully' });
+    } else {
+      res.status(404).json({ status: 'error', message: 'Vehicle not found' });
+    }
+  } catch (err) {
+    console.error('Error deleting Vehicle:', err);
+    res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+  }
 });
 
 
@@ -316,6 +384,31 @@ router.post('/hotels', upload.single('image'), async (req, res) => {
       res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
     }
   });
+
+
+  // Edit a place
+router.put('/place/:place_id', async (req, res) => {
+  const { place_id } = req.params;
+  const { name, place_desc, city_id, image} = req.body;
+console.log(place_id)
+  try {
+    const query = 'UPDATE place SET name = ?, place_desc = ?, city_id = ?, image = ? WHERE place_id = ?';
+    const [result] = await db.execute(query, [name, place_desc, city_id, image, place_id]);
+
+    if (result.affectedRows > 0) {
+      res.json({ status: 'success', message: 'Place updated successfully' });
+    } else {
+      res.status(404).json({ status: 'error', message: 'Place not found' });
+    }
+  } catch (err) {
+    console.error('Error updating place:', err);
+    res.status(500).json({ status: 'error', message: 'An unknown error occurred' });
+  }
+});
+
+//
+
+
 module.exports = router;
 
 
